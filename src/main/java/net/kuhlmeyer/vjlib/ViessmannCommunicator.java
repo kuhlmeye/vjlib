@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Date;
 
 
 public abstract class ViessmannCommunicator {
@@ -102,7 +103,7 @@ public abstract class ViessmannCommunicator {
         return "UNBEKANNT";
     }
 
-    public boolean setBetriebsArt(BetriebsArt betriebsArt) throws IOException {
+    public boolean setBetriebsArt(OperatingMode betriebsArt) throws IOException {
         communicator.sendAndReceive(is, os, SendMode.Write, (short) 0x01, new short[]{0x23, 0x23, betriebsArt.getSendByte()});
         return true;
     }
@@ -357,5 +358,72 @@ public abstract class ViessmannCommunicator {
         }
     }
 
+    private void collectHeatingData(final String viessmannDevice) throws IOException, PortInUseException, UnsupportedCommOperationException, NoSuchPortException {
+         SerialPort serialPort = null;
+        try {
+            LOG.debug("Opening port.. ");
+            serialPort = openPort(viessmannDevice);
 
+
+
+            LOG.debug("Initializing device connection ");
+
+            boolean initOK = initializeTransmission();
+
+            if(!initOK) {
+                LOG.warn("Initialization not successful. Cancelling transmission!");
+            }
+
+            if(initOK) {
+                LOG.debug("Collecting heating data from device ");
+
+                HeatingData heatingData = new HeatingData();
+                heatingData.setTimestamp(new Date());
+                heatingData.setTempAussen(getAussenTemperatur());
+                heatingData.setBetriebsArtM1(getBetriebsArt());
+                heatingData.setBrennerStarts(getBrennerStarts());
+                heatingData.setBrennerStunden1(getBrennerStunden());
+                heatingData.setTempKesselIst(getKesseltemperaturIst());
+                heatingData.setTempKesselSoll(getKesseltemperaturSoll());
+                heatingData.setTempKollektor(getKollektortemperatur());
+                heatingData.setLeistung(getLeistung());
+                heatingData.setMischerM1(getMischer());
+                heatingData.setNeigungM1(getNeigung());
+                heatingData.setNiveauM1(getNiveau());
+                heatingData.setTempRaumNormalSollM1(getNormaleRaumtemperatur());
+                heatingData.setStatusPartyBetriebM1(getPartyBetrieb());
+                heatingData.setTempRaumReduziertSollM1(getReduzierteRaumtemperatur());
+                heatingData.setTempRuecklaufIstM2(getRuecklaufIstM2());
+                heatingData.setSolarLeistung(getSolarLeistung());
+                heatingData.setSolarStunden(getSolarStunden());
+                heatingData.setStatusSparbetriebM1(getSparbetrieb());
+                heatingData.setStatusPumpeM1(getStatusHeizkreisPumpe());
+                heatingData.setStatusPumpeSolar(getStatusSolarpumpe());
+                heatingData.setStatusSpeicherladepumpe(getStatusSpeicherladePumpe());
+                heatingData.setStatusSolarNachladeunterdrueckung(getStatusWarmwasserSolar());
+                heatingData.setStatusPumpeZirkulation(getStatusZirkulationspumpe());
+                heatingData.setTempPartyM1(getTemperaturPartybetrieb());
+                heatingData.setTempSpeicherUnten(getTemperaturSpeicherUnten());
+                heatingData.setVerbrauch(getVerbrauch());
+                heatingData.setTempVorlaufIstM1(getVorlaufIst());
+                heatingData.setTempVorlaufIstM2(getVorlaufIstM2());
+                heatingData.setTempVorlaufSollM1(getVorlaufSollM1());
+                heatingData.setTempWWIst(getWarmwasserIst());
+                heatingData.setTempWWSoll(getWarmwasserSoll());
+
+                LOG.debug("Finished collecting heating data.");
+            }
+
+        } catch (Throwable e) {
+            LOG.error("Error collecting data from device: '" + viessmannDevice + "'", e);
+        } finally {
+            endTransmission();
+
+            try {
+                closePort(serialPort);
+            } catch (IOException e) {
+                LOG.error("Error closing port: '" + viessmannDevice + "'", e);
+            }
+        }
+    }
 }
