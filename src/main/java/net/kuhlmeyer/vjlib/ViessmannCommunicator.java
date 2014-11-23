@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 
-public abstract class ViessmannCommunicator {
+public class ViessmannCommunicator {
 
 
     private static Logger LOG = Logger.getLogger(ViessmannCommunicator.class);
@@ -358,7 +358,7 @@ public abstract class ViessmannCommunicator {
         }
     }
 
-    private void collectHeatingData(final String viessmannDevice) throws IOException, PortInUseException, UnsupportedCommOperationException, NoSuchPortException {
+    public ViessmannData collectHeatingData(final String viessmannDevice) throws IOException, PortInUseException, UnsupportedCommOperationException, NoSuchPortException {
          SerialPort serialPort = null;
         try {
             LOG.debug("Opening port.. ");
@@ -377,7 +377,7 @@ public abstract class ViessmannCommunicator {
             if(initOK) {
                 LOG.debug("Collecting heating data from device ");
 
-                HeatingData heatingData = new HeatingData();
+                ViessmannData heatingData = new ViessmannData();
                 heatingData.setTimestamp(new Date());
                 heatingData.setTempAussen(getAussenTemperatur());
                 heatingData.setBetriebsArtM1(getBetriebsArt());
@@ -412,7 +412,9 @@ public abstract class ViessmannCommunicator {
                 heatingData.setTempWWSoll(getWarmwasserSoll());
 
                 LOG.debug("Finished collecting heating data.");
+                return heatingData;
             }
+
 
         } catch (Throwable e) {
             LOG.error("Error collecting data from device: '" + viessmannDevice + "'", e);
@@ -425,5 +427,6 @@ public abstract class ViessmannCommunicator {
                 LOG.error("Error closing port: '" + viessmannDevice + "'", e);
             }
         }
+        return null;
     }
 }

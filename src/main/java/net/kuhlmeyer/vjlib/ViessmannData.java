@@ -3,7 +3,7 @@ package net.kuhlmeyer.vjlib;
 import java.io.Serializable;
 import java.util.Date;
 
-public class HeatingData implements Serializable {
+public class ViessmannData implements Serializable {
 
     private Date timestamp;
 	private Double tempAussen;
@@ -300,7 +300,7 @@ public class HeatingData implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        HeatingData that = (HeatingData) o;
+        ViessmannData that = (ViessmannData) o;
 
         if (betriebsArtM1 != null ? !betriebsArtM1.equals(that.betriebsArtM1) : that.betriebsArtM1 != null) return false;
         if (brennerStarts != null ? !brennerStarts.equals(that.brennerStarts) : that.brennerStarts != null) return false;
