@@ -1,0 +1,90 @@
+/*
+
+ Puffertemperatur gedämpft oben				0x0810	/ 10	2
+ Puffertemperatur gedämpft unten 			0x0812	/ 10	2
+ Brennstoffverbrauch [kg] (Gesamt?)			0x08B0		4
+ Brennstoffverbrauch [kg]					0x08B4		4
+ KesselTemperatur							0x0B12	/ 10	2
+ Flammtemperatur							0x0B14	/ 10	2
+ Einschubtemperatur							0x0B16	/ 10	2
+ Lambdasonde [%]							0x0B18	/ 10	2
+ Position Primärluftklappe					0x0B1A	0..100	1
+ Position Sekundärluftklappe				0x0B1B	0..100	1
+ Drehzahl Soll								0x0B1C	0..3000	2
+ Drehzahl Ist								0x0B1E	0..3000	2
+ KesselLeistung [%]							0x0B20	0..100	1
+
+ Puffer Solltemperatur 6600
+ Art der Fördertechnik -> Schnecke + Gewebesilo 00FE
+ Vorlauftemperatur 2900
+ Speichertemperatur 0814
+ Warmwassertemperatur Soll 6300
+ Solar Speichertemperatur 081A
+ Solar Kollektortemperatur 6564
+ Solar Waermemenge 6560
+ Solar Betriebsstunden 6568
+
+ AussenTemp. 0800
+ KesselTemp A202
+ WarmWasser Ist 0806 oder 0814
+ WW Soll Aktuell 6500
+ Vorlauf M1 0808
+ Puffer Oben 0810
+ Puffer Unten 0804 oder 0812
+ BrennerStarts 088A
+ HK-Pumpe M1 2323
+ Kessel Leistung A305 => 0-200
+
+ Betriebsmodus 2500
+ Brennkammer ein/aus 0962
+
+
+ ApplicationMode A302
+ 0=AUTO
+ 1=HEAT
+ 2=MRNG_WRMUP
+ 3=COOL
+ 4=NIGHT_PURGE
+ 5=PRE_COOL
+ 6=OFF
+ 7=TEST
+ 8=EMERG_HEAT
+ 9=FAN_ONLY
+ 10=FREE_COOL
+ 11=ICE
+ 110=SLAVE_ACTIVE
+ 111=LOW_FIRE
+ 112=HIGH_FIRE
+ 100=FLOW_TEMP
+
+ probier mal 0x0962 (1 Byte) für den Brennerstatus.
+ Die Adresse fand ich in Vitosoft, allerdings sind nur die Werte 0/1 (Aus/Ein) dokumentiert. Vielleicht steht da noch mehr drin.
+ Dann gibt es noch an der Adresse 0xA340 [Airbus ;-)] ein Datenpunkt "Warmwasseranforderung an den internen Speicher" mit dem Zustand 1/0 aktiv/inaktiv. An dieser Adresse müssen 4 Bytes gelesen werden und der Status steht im 13. Bit (wobei ich jetzt nicht weiss, ob die Bits bei 0 oder 1 beginnen). Es müsste also irgend ein Bit in diesem 4 Byte Wert sein (das 14. Bit wäre Speicherladung, das 15. Leistungsreduzierung ist kritisch/unkritisch 1/0, das 20. Produktionsstatus).
+
+
+ *
+ *
+ */
+
+
+		/*
+		 * Write Bedienung HKx - Betriebsdaten HKx - Betriebsart
+		 * (Datenpunktlänhex - dez Abschaltbetrieb 0x00 - 0 Warmwasser => IO
+		 * 0x01 - 1 Heizen und Warmwasser 0x02 - 2 Dauernd red. Betrieb 0x03 - 3
+		 * Dauernd Normalbetrieb 0x04 - 4
+		 *
+		 *
+		 * Read
+		 *
+		 * Information - Heizkreis HKx - aktuelle Betriebsart (Datenhex - dez
+		 * Abschaltbetr. (Dauernd) 0x00 - 0 Red. Betrieb (Schaltuhr) 0x01 - 1
+		 * Normalbetrieb (Schaltuhr) 0x02 - 2 Normalbetrieb (Dauernd) 0x03 - 3
+		 *
+		 * Pellet und Scheitholz Kessel Puffertemperatur gedämpft oben 0x0810 /
+		 * 10 2 Puffertemperatur gedämpft unten 0x0812 / 10 2 KesselTemperatur
+		 * 0x0B12 / 10 2 Flammtemperatur 0x0B14 / 10 2 Einschubtemperatur 0x0B16
+		 * / 10 2 Lambdasonde [%] 0x0B18 / 10 2 Position Primärluftklappe 0x0B1A
+		 * 0..100 1 Position Sekundärluftklappe 0x0B1B 0..100 1 Drehzahl Soll
+		 * 0x0B1C 0..3000 2 Drehzahl Ist 0x0B1E 0..3000 2 KesselLeistung [%]
+		 * 0x0B20 0..100 1 Brennstoffverbrauch [kg] 0x08B0 4
+		 */
