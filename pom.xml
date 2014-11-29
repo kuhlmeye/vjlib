@@ -2,20 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.kuhlmeyer</groupId>
-    <artifactId>owlib</artifactId>
-    <version>0.4</version>
+    <artifactId>vjlib</artifactId>
+    <version>0.2-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>Open 2300 Lib</name>
-    <description>A Open 2300 weather station communication library</description>
-    <url>http://github.com/kuhlmeye/owlib</url>
+    <name>Viessmann Heating Lib</name>
+    <description>A Viessmann heating communication library</description>
+    <url>http://github.com/kuhlmeye/vjlib</url>
 
     <scm>
-        <connection>scm:git:git://github.com/kuhlmeye/owlib.git</connection>
-        <developerConnection>scm:git:git@github.com:kuhlmeye/owlib.git</developerConnection>
-        <url>http://github.com/kuhlmeye/owlib</url>
-        <tag>owlib-0.1</tag>
-    </scm>
+        <connection>scm:git:git://github.com/kuhlmeye/vjlib.git</connection>
+        <developerConnection>scm:git:git@github.com:kuhlmeye/vjlib.git</developerConnection>
+        <url>http://github.com/kuhlmeye/vjlib</url>
+      <tag>HEAD</tag>
+  </scm>
 
 
     <distributionManagement>
