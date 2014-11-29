@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.kuhlmeyer</groupId>
     <artifactId>vjlib</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
 
     <packaging>jar</packaging>
     <name>Viessmann Heating Lib</name>
@@ -14,7 +14,7 @@
         <connection>scm:git:git://github.com/kuhlmeye/vjlib.git</connection>
         <developerConnection>scm:git:git@github.com:kuhlmeye/vjlib.git</developerConnection>
         <url>http://github.com/kuhlmeye/vjlib</url>
-      <tag>HEAD</tag>
+      <tag>vjlib-0.4</tag>
   </scm>
 
 
