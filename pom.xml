@@ -64,7 +64,7 @@
                         <version>2.5.1</version>
                 <configuration>
                     <releaseProfiles>release</releaseProfiles>
-                    <goals>install animal-sniffer:check deploy site</goals>
+                    <goals>install deploy site</goals>
                 </configuration>
                         <dependencies>
                           <dependency>
