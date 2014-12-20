@@ -272,36 +272,40 @@ public class ViessmannCommunicator {
     }
 
     public boolean initializeTransmission() throws IOException {
-        os.flush();
-        os.write((byte) 0x04);
-        os.flush();
         for (int i = 0; i < 50; i++) {
-            LOG.trace("Waiting for 0x05");
-            if (is.available() <= 0) {
+            os.flush();
+            os.write((byte) 0x04);
+            os.flush();
+            LOG.trace("Waiting for 0x05 byte");
+            for(int j = 0; j < 20 && is.available() <= 0; j++) {
                 sleep(200);
             }
 
             byte[] bytes = new byte[is.available()];
             is.read(bytes);
 
-            if (LOG.isTraceEnabled()) {
-                StringBuilder logBuffer = new StringBuilder();
-                for (byte b : bytes) {
-                    logBuffer.append(String.format("%02X", b));
-                }
-                LOG.trace(logBuffer.toString());
-            }
             if (bytes != null && bytes.length > 0 && bytes[bytes.length - 1] == 0x05) {
+                is.skip(is.available());
                 os.write(new byte[]{0x16, 0x00, 0x00});
                 os.flush();
                 LOG.trace("sending 0x16 0x00 0x00");
 
                 byte resp = (byte) is.read();
-                LOG.trace("Received " + String.format("%02X", resp));
+                LOG.trace("Received " + String.format("'%02X'", resp));
 
                 if (resp == 0x06) {
                     return true;
                 }
+            }
+
+            if (LOG.isTraceEnabled() && bytes.length > 0) {
+                StringBuilder logBuffer = new StringBuilder();
+                logBuffer.append("Byte buffer was: '");
+                for (byte b : bytes) {
+                    logBuffer.append(String.format("%02X", b));
+                }
+                logBuffer.append("'");
+                LOG.trace(logBuffer.toString());
             }
         }
 
@@ -319,7 +323,7 @@ public class ViessmannCommunicator {
 
 
 
-    public SerialPort openPort(final String viessmannDevice) throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException, IOException {
+    public SerialPort openPort(final String viessmannDevice) throws IOException, UnsupportedCommOperationException, NoSuchPortException, PortInUseException {
 
         LOG.debug("Opening port " + viessmannDevice);
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(viessmannDevice);
