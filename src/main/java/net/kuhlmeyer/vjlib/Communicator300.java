@@ -15,7 +15,7 @@ public class Communicator300 implements Communicator {
 
     @Override
     public short[] sendAndReceive(InputStream is, OutputStream os, SendMode sendMode, short responseLength, short... request) throws IOException {
-        return sendAndReceive(is, os, RETRY_COUNT, sendMode, responseLength, responseLength);
+        return sendAndReceive(is, os, RETRY_COUNT, sendMode, responseLength, request);
     }
 
     private short[] sendAndReceive(InputStream is, OutputStream os, int retry, SendMode sendMode, short responseLength, short... request) throws IOException {
